@@ -132,16 +132,5 @@ public class TaskService : ITaskService
             }
     }
 
-    // private void UpdateTaskStatus(object? state)
-    // {
-    //     var pending = _tasks.Where(t => t.Status == Status.Pending.ToString()).ToList();
-    //     var rand = new Random();
-
-    //     foreach (var task in pending)
-    //     {
-    //         if (rand.NextDouble() < 0.5)
-    //             task.Status = "In Progress";
-    //     }
-    // }
     #endregion
 }

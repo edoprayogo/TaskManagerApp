@@ -17,7 +17,6 @@ namespace Service
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine("✅ TaskStatusHostedService started.");
             // Start immediately and run every 10 seconds
             _timer = new Timer(UpdateTaskStatuses, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
             return Task.CompletedTask;
@@ -40,7 +39,6 @@ namespace Service
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine("🛑 TaskStatusHostedService stopping.");
             _timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
