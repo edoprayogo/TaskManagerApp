@@ -1,7 +1,14 @@
+using Contract.Services;
+using Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(); 
+
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddSingleton<ITaskService, TaskService>();
+builder.Services.AddHostedService<TaskStatusHostedService>();
 
 var app = builder.Build();
 

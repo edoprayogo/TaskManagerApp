@@ -1,0 +1,110 @@
+﻿@using Domain.Entities
+@model IEnumerable<TaskItem>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">📝 Task Manager</h2>
+    <p class="text-muted">Manage your tasks efficiently with priority and progress tracking.</p>
+</div>
+
+<!-- Add Task Form -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="post" asp-action="Add" class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Task Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter task name..." required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Priority</label>
+                <select name="priority" class="form-select">
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary">➕ Add Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Save & Load Buttons -->
+<div class="d-flex gap-2 mb-3">
+    <form method="post" asp-action="Save">
+        <button type="submit" class="btn btn-outline-success">💾 Save</button>
+    </form>
+    <form method="post" asp-action="Load">
+        <button type="submit" class="btn btn-outline-info">📂 Load</button>
+    </form>
+</div>
+
+<!-- Task Table -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered text-center align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Task</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td class="text-start">@task.Name</td>
+                <td>
+                    <span class="badge 
+                        @(task.Priority == "High" ? "bg-danger" : 
+                          task.Priority == "Medium" ? "bg-warning text-dark" : 
+                          "bg-secondary")">
+                        @task.Priority
+                    </span>
+                </td>
+                <td>
+                    <span class="badge 
+                        @(task.Status == "Completed" ? "bg-success" : 
+                          task.Status == "In Progress" ? "bg-primary" : 
+                          "bg-light text-dark")">
+                        @task.Status
+                    </span>
+                </td>
+                <td>
+                    <div class="d-flex justify-content-center gap-1">
+                        @if (task.Status != "Completed")
+                        {
+                            <form method="post" asp-action="Complete">
+                                <input type="hidden" name="id" value="@task.Id" />
+                                <button class="btn btn-sm btn-outline-success">✔ Complete</button>
+                            </form>
+                        }
+                        <form method="post" asp-action="Delete">
+                            <input type="hidden" name="id" value="@task.Id" />
+                            <button class="btn btn-sm btn-outline-danger">🗑 Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
