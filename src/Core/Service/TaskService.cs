@@ -5,27 +5,52 @@ using Domain.Entities;
 
 namespace Service;
 
+/// <summary>
+/// Provides task management functionality including creating, updating, deleting,
+/// saving, and loading tasks using a JSON file for persistence.
+/// </summary>
 public class TaskService : ITaskService
 {
     #region prop and ctor
+
+    /// <summary>
+    /// The file path where tasks are persisted as JSON.
+    /// </summary>
     private readonly string _filePath = Path.Combine(
         Directory
             .GetParent(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName)!
             .FullName,
         "taskdata.json"
     );
-    private readonly List<TaskItem> _tasks = new();
-    //private readonly Timer _backgroundTimer;
 
+    /// <summary>
+    /// In-memory list of task items.
+    /// </summary>
+    private readonly List<TaskItem> _tasks = new();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskService"/> class and loads existing tasks.
+    /// </summary>
     public TaskService()
     {
         LoadTasks();
-       // _backgroundTimer = new Timer(UpdateTaskStatus, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
     }
     #endregion
 
     #region main method
+
+
+    /// <summary>
+    /// Retrieves all tasks currently in memory.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerable{TaskItem}"/> containing all tasks.</returns>
     public IEnumerable<TaskItem> GetAll() => _tasks;
+
+    /// <summary>
+    /// Adds a new task with a unique ID and default status of Pending.
+    /// Automatically saves the updated task list to persistent storage.
+    /// </summary>
+    /// <param name="task">The task to add.</param>
     public void Add(TaskItem task)
     {
         task.Id = Guid.NewGuid();
@@ -33,6 +58,12 @@ public class TaskService : ITaskService
         _tasks.Add(task);
         SaveTasks();
     }
+    
+    /// <summary>
+    /// Marks a task as completed based on its unique identifier.
+    /// Updates both the file and in-memory task list.
+    /// </summary>
+    /// <param name="id">The <see cref="Guid"/> of the task to complete.</param>
     public void Complete(Guid id)
     {
         try
@@ -66,7 +97,12 @@ public class TaskService : ITaskService
         }
     }
 
-    public void Delete(Guid id)
+    /// <summary>
+    /// Deletes a task from the list and persistent storage based on its ID.
+    /// Updates the in-memory task list as well.
+    /// </summary>
+    /// <param name="id">The <see cref="Guid"/> of the task to delete.</param>
+   public void Delete(Guid id)
     {
         try
         {
@@ -95,6 +131,9 @@ public class TaskService : ITaskService
         }
     }
 
+    /// <summary>
+    /// Saves the current in-memory list of tasks to a JSON file.
+    /// </summary>
     public void SaveTasks()
     {
         try
@@ -108,6 +147,9 @@ public class TaskService : ITaskService
         }
     }
 
+    /// <summary>
+    /// Loads tasks from the JSON file into memory if the file exists.
+    /// </summary>
     public void LoadTasks()
     {
             try
